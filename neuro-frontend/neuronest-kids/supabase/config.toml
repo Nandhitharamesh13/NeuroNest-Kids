@@ -1,0 +1,10 @@
+project_id = "lmlfcvruznkdmlmfwale"
+
+[functions.ai-student-analysis]
+verify_jwt = false
+
+[functions.analyze-letter-drawing]
+verify_jwt = false
+
+[functions.adaptive-ai-helper]
+verify_jwt = false

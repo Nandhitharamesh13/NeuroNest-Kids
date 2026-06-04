@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroNest — System Diagrams (DFD & ERD)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff; color: #222; padding: 20px; }
+        h1 { text-align: center; font-size: 24px; margin-bottom: 6px; }
+        h2 { font-size: 20px; margin: 40px 0 16px; border-bottom: 2px solid #333; padding-bottom: 6px; }
+        h3 { font-size: 16px; margin: 24px 0 12px; color: #444; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+        .diagram-container { width: 100%; overflow-x: auto; margin: 20px 0 40px; }
+        svg { display: block; margin: 0 auto; }
+        .page-break { page-break-before: always; }
+        table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+        th, td { border: 1px solid #999; padding: 8px 12px; text-align: left; font-size: 13px; }
+        th { background: #f0f0f0; font-weight: 600; }
+        .note { background: #f9f9f0; border-left: 4px solid #888; padding: 12px 16px; margin: 16px 0; font-size: 13px; }
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+            h2 { page-break-before: always; }
+            h2:first-of-type { page-break-before: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>NeuroNest — System Diagrams</h1>
+<p class="subtitle">Data Flow Diagrams (DFD) & Entity Relationship Diagram (ERD)<br>Academic Year 2025–2026</p>
+
+<div class="note no-print">
+    <strong>Instructions:</strong> Press <strong>Ctrl+P</strong> (Windows) or <strong>Cmd+P</strong> (Mac) to print or save as PDF. Each diagram section will start on a new page when printed.
+</div>
+
+<!-- ============================================================ -->
+<!-- LEVEL 0 DFD -->
+<!-- ============================================================ -->
+<h2>6.1.1 Level 0 DFD — Context Diagram</h2>
+<p>The context diagram shows the NeuroNest system as a single process interacting with three external entities: Parent User, Child User, and the Google Gemini AI Engine.</p>
+
+<div class="diagram-container">
+<svg width="820" height="520" viewBox="0 0 820 520">
+    <!-- External Entity: Parent -->
+    <rect x="20" y="40" width="160" height="70" fill="#e8f4fd" stroke="#2980b9" stroke-width="2" rx="0"/>
+    <rect x="24" y="44" width="152" height="62" fill="none" stroke="#2980b9" stroke-width="1" rx="0"/>
+    <text x="100" y="72" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c3e50">PARENT</text>
+    <text x="100" y="92" text-anchor="middle" font-size="12" fill="#555">External Entity</text>
+
+    <!-- External Entity: Child -->
+    <rect x="20" y="340" width="160" height="70" fill="#e8f4fd" stroke="#2980b9" stroke-width="2" rx="0"/>
+    <rect x="24" y="344" width="152" height="62" fill="none" stroke="#2980b9" stroke-width="1" rx="0"/>
+    <text x="100" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c3e50">CHILD</text>
+    <text x="100" y="392" text-anchor="middle" font-size="12" fill="#555">External Entity</text>
+
+    <!-- Process: NeuroNest System (Circle) -->
+    <ellipse cx="460" cy="230" rx="150" ry="100" fill="#fef9e7" stroke="#e67e22" stroke-width="2.5"/>
+    <text x="460" y="210" text-anchor="middle" font-size="11" fill="#666">0</text>
+    <text x="460" y="232" text-anchor="middle" font-size="15" font-weight="bold" fill="#2c3e50">NeuroNest</text>
+    <text x="460" y="252" text-anchor="middle" font-size="12" fill="#555">Educational Platform</text>
+
+    <!-- External Entity: AI Engine -->
+    <rect x="660" y="340" width="140" height="70" fill="#e8f4fd" stroke="#2980b9" stroke-width="2" rx="0"/>
+    <rect x="664" y="344" width="132" height="62" fill="none" stroke="#2980b9" stroke-width="1" rx="0"/>
+    <text x="730" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c3e50">GEMINI AI</text>
+    <text x="730" y="392" text-anchor="middle" font-size="12" fill="#555">External Entity</text>
+
+    <!-- Arrows -->
+    <!-- Parent → System -->
+    <line x1="180" y1="60" x2="315" y2="180" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+    <text x="220" y="100" font-size="11" fill="#333" transform="rotate(-30, 220, 100)">Login, Child Data,</text>
+    <text x="225" y="115" font-size="11" fill="#333" transform="rotate(-30, 225, 115)">Remote Settings</text>
+
+    <!-- System → Parent -->
+    <line x1="340" y1="155" x2="180" y2="85" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+    <text x="290" y="140" font-size="11" fill="#333">Reports, Alerts</text>
+
+    <!-- Parent → Child (via System) -->
+    <line x1="100" y1="110" x2="100" y2="340" stroke="#e67e22" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrowhead-orange)"/>
+    <text x="108" y="225" font-size="11" fill="#e67e22">Remote Control</text>
+    <text x="108" y="240" font-size="11" fill="#e67e22">(WebSocket)</text>
+
+    <!-- Child → System -->
+    <line x1="180" y1="365" x2="320" y2="290" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+    <text x="210" y="340" font-size="11" fill="#333">Game Answers,</text>
+    <text x="210" y="355" font-size="11" fill="#333">Session Data</text>
+
+    <!-- System → Child -->
+    <line x1="330" y1="310" x2="180" y2="380" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+    <text x="225" y="310" font-size="11" fill="#333">Games, Feedback,</text>
+    <text x="225" y="325" font-size="11" fill="#333">Filtered Categories</text>
+
+    <!-- System → AI -->
+    <line x1="590" y1="300" x2="660" y2="360" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+    <text x="610" y="310" font-size="11" fill="#333">Session Data</text>
+
+    <!-- AI → System -->
+    <line x1="660" y1="340" x2="600" y2="270" stroke="#333" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+    <text x="640" y="285" font-size="11" fill="#333">Insights,</text>
+    <text x="640" y="300" font-size="11" fill="#333">Difficulty Adj.</text>
+
+    <!-- Arrowhead markers -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+        </marker>
+        <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#e67e22"/>
+        </marker>
+    </defs>
+</svg>
+</div>
+
+<table>
+<tr><th>Symbol</th><th>Meaning</th><th>Usage in Diagram</th></tr>
+<tr><td>Rectangle (double border)</td><td>External Entity</td><td>Parent User, Child User, Gemini AI Engine</td></tr>
+<tr><td>Ellipse / Circle</td><td>Process</td><td>NeuroNest Educational Platform (Process 0)</td></tr>
+<tr><td>Solid Arrow</td><td>Data Flow</td><td>Data moving between entities and processes</td></tr>
+<tr><td>Dashed Arrow</td><td>Real-time Data Flow</td><td>WebSocket-based remote control settings sync</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- LEVEL 1 DFD -->
+<!-- ============================================================ -->
+<h2 class="page-break">6.1.2 Level 1 DFD — Detailed Data Flow Diagram</h2>
+<p>The Level 1 DFD decomposes Process 0 into six sub-processes with their associated data stores.</p>
+
+<div class="diagram-container">
+<svg width="850" height="780" viewBox="0 0 850 780">
+    <!-- External Entity: Parent -->
+    <rect x="20" y="20" width="140" height="50" fill="#e8f4fd" stroke="#2980b9" stroke-width="2"/>
+    <rect x="23" y="23" width="134" height="44" fill="none" stroke="#2980b9" stroke-width="1"/>
+    <text x="90" y="50" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50">PARENT USER</text>
+
+    <!-- External Entity: Child -->
+    <rect x="20" y="460" width="140" height="50" fill="#e8f4fd" stroke="#2980b9" stroke-width="2"/>
+    <rect x="23" y="463" width="134" height="44" fill="none" stroke="#2980b9" stroke-width="1"/>
+    <text x="90" y="492" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50">CHILD USER</text>
+
+    <!-- External Entity: AI -->
+    <rect x="680" y="560" width="140" height="50" fill="#e8f4fd" stroke="#2980b9" stroke-width="2"/>
+    <rect x="683" y="563" width="134" height="44" fill="none" stroke="#2980b9" stroke-width="1"/>
+    <text x="750" y="590" text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50">GEMINI AI</text>
+
+    <!-- Process 1.0: Authentication -->
+    <ellipse cx="300" cy="50" rx="90" ry="35" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="300" y="42" text-anchor="middle" font-size="10" fill="#888">1.0</text>
+    <text x="300" y="58" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Authenticate User</text>
+
+    <!-- Process 2.0: Parent Dashboard -->
+    <ellipse cx="550" cy="140" rx="90" ry="35" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="550" y="132" text-anchor="middle" font-size="10" fill="#888">2.0</text>
+    <text x="550" y="148" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Parent Dashboard</text>
+
+    <!-- Process 3.0: Child Dashboard -->
+    <ellipse cx="300" cy="485" rx="90" ry="35" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="300" y="477" text-anchor="middle" font-size="10" fill="#888">3.0</text>
+    <text x="300" y="493" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Child Dashboard</text>
+
+    <!-- Process 4.0: Game Engine -->
+    <ellipse cx="550" cy="485" rx="90" ry="35" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="550" y="477" text-anchor="middle" font-size="10" fill="#888">4.0</text>
+    <text x="550" y="493" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Game Engine</text>
+
+    <!-- Process 5.0: Remote Control -->
+    <ellipse cx="550" cy="310" rx="90" ry="35" fill="#fff3e0" stroke="#e67e22" stroke-width="2.5"/>
+    <text x="550" y="302" text-anchor="middle" font-size="10" fill="#888">5.0</text>
+    <text x="550" y="318" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Remote Control</text>
+
+    <!-- Process 6.0: AI Engine -->
+    <ellipse cx="750" cy="485" rx="70" ry="35" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="750" y="477" text-anchor="middle" font-size="10" fill="#888">6.0</text>
+    <text x="750" y="493" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">AI Engine</text>
+
+    <!-- Data Stores (parallel lines) -->
+    <!-- D1: profiles + user_roles -->
+    <line x1="400" y1="95" x2="700" y2="95" stroke="#333" stroke-width="2"/>
+    <line x1="400" y1="115" x2="700" y2="115" stroke="#333" stroke-width="2"/>
+    <text x="420" y="110" font-size="11" fill="#333">D1: profiles, user_roles, parental_settings</text>
+
+    <!-- D2: child_profiles -->
+    <line x1="350" y1="200" x2="600" y2="200" stroke="#333" stroke-width="2"/>
+    <line x1="350" y1="220" x2="600" y2="220" stroke="#333" stroke-width="2"/>
+    <text x="370" y="215" font-size="11" fill="#333">D2: child_profiles</text>
+
+    <!-- D3: game_sessions -->
+    <line x1="350" y1="600" x2="600" y2="600" stroke="#333" stroke-width="2"/>
+    <line x1="350" y1="620" x2="600" y2="620" stroke="#333" stroke-width="2"/>
+    <text x="370" y="615" font-size="11" fill="#333">D3: game_sessions</text>
+
+    <!-- D5: child_behavior_profiles -->
+    <line x1="620" y1="650" x2="830" y2="650" stroke="#333" stroke-width="2"/>
+    <line x1="620" y1="670" x2="830" y2="670" stroke="#333" stroke-width="2"/>
+    <text x="640" y="665" font-size="11" fill="#333">D5: child_behavior_profiles</text>
+
+    <!-- D6: remote_control_settings -->
+    <line x1="350" y1="350" x2="680" y2="350" stroke="#e67e22" stroke-width="2"/>
+    <line x1="350" y1="370" x2="680" y2="370" stroke="#e67e22" stroke-width="2"/>
+    <text x="370" y="365" font-size="11" fill="#e67e22" font-weight="bold">D6: remote_control_settings (REALTIME)</text>
+
+    <!-- Data Flow Arrows -->
+    <!-- Parent → 1.0 -->
+    <line x1="160" y1="45" x2="210" y2="48" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="165" y="38" font-size="10" fill="#555">Credentials</text>
+
+    <!-- 1.0 → D1 -->
+    <line x1="370" y1="72" x2="420" y2="95" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="378" y="78" font-size="10" fill="#555">Save Profile</text>
+
+    <!-- 1.0 → 2.0 -->
+    <line x1="385" y1="55" x2="460" y2="125" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="405" y="80" font-size="10" fill="#555">Session Token</text>
+
+    <!-- 2.0 → D2 -->
+    <line x1="550" y1="175" x2="500" y2="200" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="480" y="190" font-size="10" fill="#555">Create/Edit Child</text>
+
+    <!-- Parent → 5.0 -->
+    <line x1="100" y1="70" x2="460" y2="300" stroke="#e67e22" stroke-width="1.5" marker-end="url(#arr-o)"/>
+    <text x="200" y="170" font-size="10" fill="#e67e22" transform="rotate(42, 200, 170)">Remote Control Settings</text>
+
+    <!-- 5.0 → D6 -->
+    <line x1="550" y1="345" x2="550" y2="350" stroke="#e67e22" stroke-width="1.5" marker-end="url(#arr-o)"/>
+
+    <!-- D6 → 3.0 (WebSocket push) -->
+    <line x1="380" y1="370" x2="320" y2="455" stroke="#e67e22" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arr-o)"/>
+    <text x="310" y="415" font-size="10" fill="#e67e22" font-weight="bold">WebSocket Push</text>
+
+    <!-- D2 → 3.0 -->
+    <line x1="380" y1="220" x2="310" y2="450" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="325" y="330" font-size="10" fill="#555">Load Profile</text>
+
+    <!-- Child → 3.0 -->
+    <line x1="160" y1="485" x2="210" y2="485" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <!-- 3.0 → 4.0 -->
+    <line x1="390" y1="485" x2="460" y2="485" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="405" y="478" font-size="10" fill="#555">Play Game</text>
+
+    <!-- 4.0 → D3 -->
+    <line x1="550" y1="520" x2="500" y2="600" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="500" y="560" font-size="10" fill="#555">Save Results</text>
+
+    <!-- 4.0 → 6.0 -->
+    <line x1="640" y1="485" x2="680" y2="485" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="645" y="478" font-size="10" fill="#555">Session Data</text>
+
+    <!-- 6.0 → D5 -->
+    <line x1="750" y1="520" x2="740" y2="650" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+    <text x="755" y="590" font-size="10" fill="#555">AI Insights</text>
+
+    <!-- 6.0 → AI External -->
+    <line x1="750" y1="520" x2="750" y2="560" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+        </marker>
+        <marker id="arr-o" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#e67e22"/>
+        </marker>
+    </defs>
+</svg>
+</div>
+
+<table>
+<tr><th>Process</th><th>Description</th></tr>
+<tr><td>1.0 Authenticate User</td><td>Handles signup, login, session creation; creates profile, role, and settings records</td></tr>
+<tr><td>2.0 Parent Dashboard</td><td>Child profile management (CRUD), access to reports and settings</td></tr>
+<tr><td>3.0 Child Dashboard</td><td>Game hub display; receives real-time category filtering from Remote Control</td></tr>
+<tr><td>4.0 Game Engine</td><td>12+ educational games with adaptive difficulty, scoring, and session saving</td></tr>
+<tr><td>5.0 Remote Control</td><td>Parent configures settings; saves to D6 which triggers WebSocket push to 3.0</td></tr>
+<tr><td>6.0 AI Engine</td><td>Behavioral analysis, difficulty adjustment, and recommendations via Gemini AI</td></tr>
+</table>
+
+<table>
+<tr><th>Data Store</th><th>Description</th></tr>
+<tr><td>D1: profiles, user_roles, parental_settings</td><td>User identity, role, and global preferences</td></tr>
+<tr><td>D2: child_profiles</td><td>Child records with name, age, avatar</td></tr>
+<tr><td>D3: game_sessions</td><td>Completed game results with scores and mistakes</td></tr>
+<tr><td>D5: child_behavior_profiles</td><td>AI-tracked behavioral metrics per child</td></tr>
+<tr><td style="color:#e67e22;font-weight:bold">D6: remote_control_settings</td><td>Parent remote control configuration — REALTIME enabled for WebSocket sync</td></tr>
+</table>
+
+
+<!-- ============================================================ -->
+<!-- LEVEL 2 DFD -->
+<!-- ============================================================ -->
+<h2 class="page-break">6.1.3 Level 2 DFD — Game Engine (Process 4.0)</h2>
+<p>Decomposition of Process 4.0 (Game Engine) into five sub-processes showing the detailed game flow.</p>
+
+<div class="diagram-container">
+<svg width="600" height="680" viewBox="0 0 600 680">
+    <!-- External: Child -->
+    <rect x="220" y="10" width="140" height="45" fill="#e8f4fd" stroke="#2980b9" stroke-width="2"/>
+    <rect x="223" y="13" width="134" height="39" fill="none" stroke="#2980b9" stroke-width="1"/>
+    <text x="290" y="38" text-anchor="middle" font-size="12" font-weight="bold" fill="#2c3e50">CHILD USER</text>
+
+    <!-- 4.1 Load Questions -->
+    <ellipse cx="290" cy="120" rx="85" ry="32" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="290" y="114" text-anchor="middle" font-size="10" fill="#888">4.1</text>
+    <text x="290" y="130" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Load Questions</text>
+
+    <!-- 4.2 Adaptive Difficulty -->
+    <ellipse cx="290" cy="230" rx="85" ry="32" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="290" y="224" text-anchor="middle" font-size="10" fill="#888">4.2</text>
+    <text x="290" y="240" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Adaptive Difficulty</text>
+
+    <!-- D5 data store -->
+    <line x1="440" y1="218" x2="580" y2="218" stroke="#333" stroke-width="2"/>
+    <line x1="440" y1="238" x2="580" y2="238" stroke="#333" stroke-width="2"/>
+    <text x="450" y="233" font-size="10" fill="#333">D5: behavior_profiles</text>
+
+    <!-- 4.3 Process Answer -->
+    <ellipse cx="290" cy="340" rx="85" ry="32" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="290" y="334" text-anchor="middle" font-size="10" fill="#888">4.3</text>
+    <text x="290" y="350" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Process Answer</text>
+
+    <!-- 4.4 Save Session -->
+    <ellipse cx="290" cy="460" rx="85" ry="32" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="290" y="454" text-anchor="middle" font-size="10" fill="#888">4.4</text>
+    <text x="290" y="470" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Save Game Session</text>
+
+    <!-- D3 data store -->
+    <line x1="440" y1="448" x2="580" y2="448" stroke="#333" stroke-width="2"/>
+    <line x1="440" y1="468" x2="580" y2="468" stroke="#333" stroke-width="2"/>
+    <text x="450" y="463" font-size="10" fill="#333">D3: game_sessions</text>
+
+    <!-- 4.5 Update Rewards -->
+    <ellipse cx="290" cy="570" rx="85" ry="32" fill="#fef9e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="290" y="564" text-anchor="middle" font-size="10" fill="#888">4.5</text>
+    <text x="290" y="580" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Update Rewards</text>
+
+    <!-- Reward output label -->
+    <text x="290" y="625" text-anchor="middle" font-size="11" fill="#27ae60" font-weight="bold">XP + Badges + Stars</text>
+
+    <!-- Flow arrows -->
+    <line x1="290" y1="55" x2="290" y2="88" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="300" y="75" font-size="10" fill="#555">Select Game</text>
+
+    <line x1="290" y1="152" x2="290" y2="198" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="300" y="180" font-size="10" fill="#555">Question Pool</text>
+
+    <line x1="375" y1="228" x2="440" y2="228" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="390" y="213" font-size="10" fill="#555">Read Profile</text>
+
+    <line x1="290" y1="262" x2="290" y2="308" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="300" y="286" font-size="10" fill="#555">7 Easy + 3 Hard</text>
+
+    <line x1="290" y1="372" x2="290" y2="428" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="300" y="400" font-size="10" fill="#555">After 10 Rounds</text>
+
+    <line x1="375" y1="458" x2="440" y2="458" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="390" y="443" font-size="10" fill="#555">Save Results</text>
+
+    <line x1="290" y1="492" x2="290" y2="538" stroke="#333" stroke-width="1.5" marker-end="url(#arr2)"/>
+    <text x="300" y="518" font-size="10" fill="#555">Session Data</text>
+
+    <defs>
+        <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+        </marker>
+    </defs>
+</svg>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- ER DIAGRAM -->
+<!-- ============================================================ -->
+<h2 class="page-break">6.2 Entity Relationship Diagram (ERD)</h2>
+<p>The ER diagram shows all 7 database entities, their attributes, primary keys (PK), foreign keys (FK), and the cardinality of relationships between them.</p>
+
+<div class="diagram-container">
+<svg width="850" height="1050" viewBox="0 0 850 1050">
+
+    <!-- ========= ENTITY: auth.users ========= -->
+    <rect x="300" y="20" width="220" height="30" fill="#3498db" stroke="#2980b9" stroke-width="2" rx="4"/>
+    <text x="410" y="40" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">auth.users</text>
+    <rect x="300" y="50" width="220" height="70" fill="#fff" stroke="#2980b9" stroke-width="1.5" rx="0"/>
+    <text x="310" y="70" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="310" y="86" font-size="11" fill="#333">    email : TEXT</text>
+    <text x="310" y="102" font-size="11" fill="#333">    created_at : TIMESTAMPTZ</text>
+
+    <!-- ========= ENTITY: profiles ========= -->
+    <rect x="30" y="200" width="200" height="30" fill="#27ae60" stroke="#229954" stroke-width="2" rx="4"/>
+    <text x="130" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">profiles</text>
+    <rect x="30" y="230" width="200" height="100" fill="#fff" stroke="#229954" stroke-width="1.5"/>
+    <text x="40" y="250" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="40" y="266" font-size="11" fill="#c0392b">🔗 user_id : UUID (FK)</text>
+    <text x="40" y="282" font-size="11" fill="#333">    email : TEXT</text>
+    <text x="40" y="298" font-size="11" fill="#333">    display_name : TEXT</text>
+    <text x="40" y="314" font-size="11" fill="#333">    created_at, updated_at</text>
+
+    <!-- ========= ENTITY: user_roles ========= -->
+    <rect x="300" y="200" width="200" height="30" fill="#27ae60" stroke="#229954" stroke-width="2" rx="4"/>
+    <text x="400" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">user_roles</text>
+    <rect x="300" y="230" width="200" height="70" fill="#fff" stroke="#229954" stroke-width="1.5"/>
+    <text x="310" y="250" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="310" y="266" font-size="11" fill="#c0392b">🔗 user_id : UUID (FK)</text>
+    <text x="310" y="282" font-size="11" fill="#333">    role : ENUM (parent|child)</text>
+
+    <!-- ========= ENTITY: parental_settings ========= -->
+    <rect x="570" y="200" width="220" height="30" fill="#27ae60" stroke="#229954" stroke-width="2" rx="4"/>
+    <text x="680" y="220" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">parental_settings</text>
+    <rect x="570" y="230" width="220" height="100" fill="#fff" stroke="#229954" stroke-width="1.5"/>
+    <text x="580" y="250" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="580" y="266" font-size="11" fill="#c0392b">🔗 parent_id : UUID (FK)</text>
+    <text x="580" y="282" font-size="11" fill="#333">    sound_enabled : BOOL</text>
+    <text x="580" y="298" font-size="11" fill="#333">    animations_enabled : BOOL</text>
+    <text x="580" y="314" font-size="11" fill="#333">    session_duration_min : INT</text>
+
+    <!-- ========= Relationship diamonds (auth.users) ========= -->
+    <!-- auth.users → profiles (1:1) -->
+    <polygon points="200,170 230,150 260,170 230,190" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="230" y="175" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">has</text>
+    <line x1="340" y1="120" x2="260" y2="155" stroke="#333" stroke-width="1.5"/>
+    <line x1="230" y1="190" x2="130" y2="200" stroke="#333" stroke-width="1.5"/>
+    <text x="305" y="130" font-size="10" fill="#333">1</text>
+    <text x="148" y="195" font-size="10" fill="#333">1</text>
+
+    <!-- auth.users → user_roles (1:1) -->
+    <polygon points="400,140 420,120 440,140 420,160" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="420" y="145" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">has</text>
+    <line x1="410" y1="120" x2="420" y2="120" stroke="#333" stroke-width="1.5"/>
+    <line x1="420" y1="160" x2="400" y2="200" stroke="#333" stroke-width="1.5"/>
+    <text x="415" y="115" font-size="10" fill="#333">1</text>
+    <text x="406" y="195" font-size="10" fill="#333">1</text>
+
+    <!-- auth.users → parental_settings (1:1) -->
+    <polygon points="570,140 600,120 630,140 600,160" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="600" y="145" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">has</text>
+    <line x1="480" y1="105" x2="570" y2="130" stroke="#333" stroke-width="1.5"/>
+    <line x1="630" y1="150" x2="680" y2="200" stroke="#333" stroke-width="1.5"/>
+    <text x="500" y="105" font-size="10" fill="#333">1</text>
+    <text x="665" y="195" font-size="10" fill="#333">1</text>
+
+    <!-- ========= ENTITY: child_profiles ========= -->
+    <rect x="250" y="420" width="220" height="30" fill="#8e44ad" stroke="#7d3c98" stroke-width="2" rx="4"/>
+    <text x="360" y="440" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">child_profiles</text>
+    <rect x="250" y="450" width="220" height="110" fill="#fff" stroke="#7d3c98" stroke-width="1.5"/>
+    <text x="260" y="470" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="260" y="486" font-size="11" fill="#c0392b">🔗 parent_id : UUID (FK)</text>
+    <text x="260" y="502" font-size="11" fill="#333">    name : TEXT (NOT NULL)</text>
+    <text x="260" y="518" font-size="11" fill="#333">    age : INTEGER (1-25)</text>
+    <text x="260" y="534" font-size="11" fill="#333">    avatar : TEXT</text>
+    <text x="260" y="550" font-size="11" fill="#333">    created_at, updated_at</text>
+
+    <!-- auth.users → child_profiles (1:N) -->
+    <polygon points="360,370 390,350 420,370 390,390" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="390" y="374" text-anchor="middle" font-size="8" font-weight="bold" fill="#333">creates</text>
+    <line x1="400" y1="300" x2="390" y2="350" stroke="#333" stroke-width="1.5"/>
+    <line x1="390" y1="390" x2="360" y2="420" stroke="#333" stroke-width="1.5"/>
+    <text x="405" y="315" font-size="10" fill="#333">1</text>
+    <text x="365" y="415" font-size="10" fill="#333">N</text>
+
+    <!-- ========= ENTITY: game_sessions ========= -->
+    <rect x="30" y="660" width="220" height="30" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="4"/>
+    <text x="140" y="680" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">game_sessions</text>
+    <rect x="30" y="690" width="220" height="140" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
+    <text x="40" y="710" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="40" y="726" font-size="11" fill="#c0392b">🔗 child_id : UUID (FK)</text>
+    <text x="40" y="742" font-size="11" fill="#333">    game_type : TEXT</text>
+    <text x="40" y="758" font-size="11" fill="#333">    score, correct_ans, wrong_ans</text>
+    <text x="40" y="774" font-size="11" fill="#333">    total_questions : INT</text>
+    <text x="40" y="790" font-size="11" fill="#333">    max_streak, duration_s</text>
+    <text x="40" y="806" font-size="11" fill="#333">    mistakes : JSONB</text>
+    <text x="40" y="822" font-size="11" fill="#333">    created_at</text>
+
+    <!-- child_profiles → game_sessions (1:N) -->
+    <polygon points="200,620 230,600 260,620 230,640" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="230" y="624" text-anchor="middle" font-size="8" font-weight="bold" fill="#333">plays</text>
+    <line x1="300" y1="560" x2="250" y2="600" stroke="#333" stroke-width="1.5"/>
+    <line x1="210" y1="640" x2="140" y2="660" stroke="#333" stroke-width="1.5"/>
+    <text x="290" y="572" font-size="10" fill="#333">1</text>
+    <text x="155" y="655" font-size="10" fill="#333">N</text>
+
+    <!-- ========= ENTITY: child_behavior_profiles ========= -->
+    <rect x="320" y="660" width="250" height="30" fill="#e74c3c" stroke="#c0392b" stroke-width="2" rx="4"/>
+    <text x="445" y="680" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">child_behavior_profiles</text>
+    <rect x="320" y="690" width="250" height="170" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
+    <text x="330" y="710" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="330" y="726" font-size="11" fill="#c0392b">🔗 child_id : UUID (FK, UNIQUE)</text>
+    <text x="330" y="742" font-size="11" fill="#333">    attention_span_min : INT</text>
+    <text x="330" y="758" font-size="11" fill="#333">    preferred_pace : VARCHAR</text>
+    <text x="330" y="774" font-size="11" fill="#333">    frustration_threshold : INT</text>
+    <text x="330" y="790" font-size="11" fill="#333">    strong_categories : JSONB</text>
+    <text x="330" y="806" font-size="11" fill="#333">    challenging_categories : JSONB</text>
+    <text x="330" y="822" font-size="11" fill="#333">    ai_insights : JSONB</text>
+    <text x="330" y="838" font-size="11" fill="#333">    average_accuracy : NUMERIC</text>
+    <text x="330" y="854" font-size="11" fill="#333">    + 8 more attributes</text>
+
+    <!-- child_profiles → behavior (1:1) -->
+    <polygon points="420,610 450,590 480,610 450,630" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="450" y="614" text-anchor="middle" font-size="8" font-weight="bold" fill="#333">has</text>
+    <line x1="420" y1="560" x2="445" y2="590" stroke="#333" stroke-width="1.5"/>
+    <line x1="450" y1="630" x2="445" y2="660" stroke="#333" stroke-width="1.5"/>
+    <text x="425" y="570" font-size="10" fill="#333">1</text>
+    <text x="440" y="658" font-size="10" fill="#333">1</text>
+
+    <!-- ========= ENTITY: remote_control_settings ========= -->
+    <rect x="610" y="660" width="220" height="30" fill="#e67e22" stroke="#d35400" stroke-width="2.5" rx="4"/>
+    <text x="720" y="680" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">remote_control_settings</text>
+    <rect x="610" y="690" width="220" height="200" fill="#fff" stroke="#d35400" stroke-width="1.5"/>
+    <text x="620" y="710" font-size="11" fill="#333">🔑 id : UUID (PK)</text>
+    <text x="620" y="726" font-size="11" fill="#c0392b">🔗 child_id : UUID (FK, UQ)</text>
+    <text x="620" y="742" font-size="11" fill="#333">    parent_id : UUID</text>
+    <text x="620" y="758" font-size="11" fill="#333">    difficulty_level : INT (1-5)</text>
+    <text x="620" y="774" font-size="11" fill="#333">    auto_adjust : BOOLEAN</text>
+    <text x="620" y="790" font-size="11" fill="#333">    enabled_categories : JSONB</text>
+    <text x="620" y="806" font-size="11" fill="#333">    daily_time_limit : INT</text>
+    <text x="620" y="822" font-size="11" fill="#333">    learning_goals : JSONB</text>
+    <text x="620" y="838" font-size="11" fill="#333">    schedule : JSONB</text>
+    <text x="620" y="854" font-size="11" fill="#333">    milestone_notifs : JSONB</text>
+    <text x="620" y="870" font-size="11" fill="#333">    break_reminders : BOOL</text>
+    <text x="620" y="886" font-size="11" fill="#e67e22" font-weight="bold">    ⚡ REALTIME ENABLED</text>
+
+    <!-- child_profiles → remote_control (1:1) -->
+    <polygon points="570,600 600,580 630,600 600,620" fill="#f1c40f" stroke="#f39c12" stroke-width="1.5"/>
+    <text x="600" y="604" text-anchor="middle" font-size="8" font-weight="bold" fill="#333">config</text>
+    <line x1="470" y1="550" x2="580" y2="580" stroke="#e67e22" stroke-width="2"/>
+    <line x1="620" y1="620" x2="720" y2="660" stroke="#e67e22" stroke-width="2"/>
+    <text x="490" y="558" font-size="10" fill="#333">1</text>
+    <text x="700" y="655" font-size="10" fill="#333">1</text>
+
+    <!-- Legend -->
+    <rect x="20" y="950" width="810" height="90" fill="#f8f8f8" stroke="#ddd" stroke-width="1" rx="4"/>
+    <text x="40" y="975" font-size="13" font-weight="bold" fill="#333">Legend:</text>
+    <rect x="40" y="985" width="20" height="14" fill="#3498db" rx="2"/>
+    <text x="70" y="997" font-size="11" fill="#333">Auth Entity</text>
+    <rect x="170" y="985" width="20" height="14" fill="#27ae60" rx="2"/>
+    <text x="200" y="997" font-size="11" fill="#333">User Management</text>
+    <rect x="340" y="985" width="20" height="14" fill="#8e44ad" rx="2"/>
+    <text x="370" y="997" font-size="11" fill="#333">Child Entity</text>
+    <rect x="470" y="985" width="20" height="14" fill="#e74c3c" rx="2"/>
+    <text x="500" y="997" font-size="11" fill="#333">Data Entities</text>
+    <rect x="610" y="985" width="20" height="14" fill="#e67e22" rx="2"/>
+    <text x="640" y="997" font-size="11" fill="#333">Realtime Entity</text>
+    <polygon points="40,1020 55,1010 70,1020 55,1030" fill="#f1c40f" stroke="#f39c12" stroke-width="1"/>
+    <text x="80" y="1025" font-size="11" fill="#333">Relationship (Diamond)</text>
+    <text x="250" y="1025" font-size="11" fill="#333">🔑 = Primary Key</text>
+    <text x="400" y="1025" font-size="11" fill="#333">🔗 = Foreign Key</text>
+    <text x="550" y="1025" font-size="11" fill="#333">⚡ = Real-time Enabled</text>
+</svg>
+</div>
+
+<h3>Relationship Summary Table</h3>
+<table>
+<tr><th>From Entity</th><th>Relationship</th><th>To Entity</th><th>Cardinality</th><th>FK Column</th></tr>
+<tr><td>auth.users</td><td>has</td><td>profiles</td><td>1 : 1</td><td>profiles.user_id</td></tr>
+<tr><td>auth.users</td><td>has</td><td>user_roles</td><td>1 : 1</td><td>user_roles.user_id</td></tr>
+<tr><td>auth.users</td><td>has</td><td>parental_settings</td><td>1 : 1</td><td>parental_settings.parent_id</td></tr>
+<tr><td>auth.users</td><td>creates</td><td>child_profiles</td><td>1 : N</td><td>child_profiles.parent_id</td></tr>
+<tr><td>child_profiles</td><td>plays</td><td>game_sessions</td><td>1 : N</td><td>game_sessions.child_id</td></tr>
+<tr><td>child_profiles</td><td>has</td><td>child_behavior_profiles</td><td>1 : 1</td><td>child_behavior_profiles.child_id (UNIQUE)</td></tr>
+<tr style="background:#fff3e0"><td>child_profiles</td><td>configured by</td><td>remote_control_settings</td><td>1 : 1</td><td>remote_control_settings.child_id (UNIQUE) ⚡</td></tr>
+</table>
+
+<div class="note">
+    <strong>Note on Real-time:</strong> The <code>remote_control_settings</code> table has PostgreSQL LISTEN/NOTIFY enabled. When a parent updates settings via the Remote Control panel, a WebSocket notification is automatically pushed to the child's device, triggering an instant UI re-render without any page refresh. This enables true cross-device remote control.
+</div>
+
+</body>
+</html>

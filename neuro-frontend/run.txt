@@ -1,0 +1,18 @@
+ai run - npm init -y 
+
+Invoke-RestMethod -Uri "http://localhost:5000/api/ai/difficulty" `
+>>   -Method POST `
+>>   -ContentType "application/json" `
+>>   -Body '{"accuracy":75}'
+>> 
+
+
+
+---------------------------------------------------------*backend
+ cd backend  
+ npm init -y
+ npx nodemon server.js
+
+ npm install express pg cors dotenv axios
+>> npm install nodemon --save-dev
+>>
