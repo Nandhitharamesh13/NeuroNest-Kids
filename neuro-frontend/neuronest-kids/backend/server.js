@@ -11,8 +11,21 @@ const aiRoutes = require("./routes/ai");
 
 const app = express();
 
+// ── CORS Configuration (Development & Production) ────────────────────────────
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:8080',
+  'http://localhost:5000',
+];
+
+// Add production frontend URL if set
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json());
