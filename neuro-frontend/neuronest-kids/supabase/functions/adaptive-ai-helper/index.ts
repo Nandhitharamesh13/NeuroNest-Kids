@@ -37,10 +37,11 @@ serve(async (req) => {
   try {
     const { action, childId, gameData, behaviorProfile, currentQuestion } =
       await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const AI_API_KEY = Deno.env.get("AI_API_KEY");
+    const AI_API_URL = Deno.env.get("AI_API_URL") || "https://api.openai.com/v1/chat/completions";
 
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!AI_API_KEY) {
+      throw new Error("AI_API_KEY is not configured");
     }
 
     let systemPrompt = "";
@@ -173,14 +174,12 @@ Provide real-time support recommendations as JSON.`;
         throw new Error(`Unknown action: ${action}`);
     }
 
-    const response = await fetch(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+    const response = await fetch(AI_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${AI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
         body: JSON.stringify({
           model: "google/gemini-2.5-flash",
           messages: [

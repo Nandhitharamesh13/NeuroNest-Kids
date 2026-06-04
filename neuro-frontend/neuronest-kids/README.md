@@ -1,53 +1,40 @@
-# Welcome to your Lovable project
+# NeuroNest Kids - Frontend Application
 
-## Project info
+This folder contains the React + Vite frontend for the NeuroNest Kids learning platform.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Quick Start
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
+
+# Build for production
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+## Project Structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+src/
+├── components/      # React components
+├── pages/          # Page routes
+├── hooks/          # Custom hooks
+├── api/            # API integration
+└── main.tsx        # Entry point
+```
 
-**Use GitHub Codespaces**
+## Local Development
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
+The frontend runs on `http://localhost:5173` and connects to the backend at `http://localhost:5000`.
+
+## See Main Repository
+
+For complete project documentation, deployment guides, and full-stack setup, please see the main repository:
+
+👉 [github.com/Pravinkumar-04/NeuroNest-Kids](https://github.com/Pravinkumar-04/NeuroNest-Kids)
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
 ## What technologies are used for this project?
@@ -62,12 +49,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Deploy the project using standard frontend or static site hosting services such as Vercel, Render, or Netlify. The app is built with Vite and outputs a production-ready `dist` folder.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain?
 
 Yes, you can!
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+After deploying the site, configure your DNS provider or deployment platform to point your custom domain to the hosted frontend URL.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+If you need instructions, use the deployment guide in the repository.
