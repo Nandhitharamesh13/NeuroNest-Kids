@@ -283,7 +283,7 @@ MIT License - See LICENSE file for details
 ## 👨‍💻 Author
 
 **Nandhitha R**
-- GitHub: [@Pravinkumar-04](https://github.com/Nandhitharamesh13)
+- GitHub: [@Nandhitharamesh13](https://github.com/Nandhitharamesh13)
 - Project: [NeuroNest-Kids](https://github.com/Nandhitharamesh13/NeuroNest-Kids)
 
 ---
