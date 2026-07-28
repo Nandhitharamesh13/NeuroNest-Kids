@@ -274,12 +274,6 @@ Contributions welcome! Please:
 
 ---
 
-## 📄 License
-
-MIT License - See LICENSE file for details
-
----
-
 ## 👨‍💻 Author
 
 **Nandhitha R**
