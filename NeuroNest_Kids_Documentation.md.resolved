@@ -1,0 +1,1157 @@
+# NeuroNest Kids — Comprehensive Project Documentation
+
+> **Version:** 2.0.0 | **Last Updated:** February 2026 | **Platform:** Web Application (React + TypeScript + Supabase)
+
+---
+
+## Table of Contents
+
+1. [Executive Summary & System Overview](#1-executive-summary--system-overview)
+2. [Technology Stack & Architecture](#2-technology-stack--architecture)
+3. [Features — Child & Parent](#3-features--child--parent)
+4. [Games Catalogue — All 20 Games](#4-games-catalogue--all-20-games)
+5. [Database Schema](#5-database-schema)
+6. [Entity-Relationship (ER) Diagram](#6-entity-relationship-er-diagram)
+7. [Data Flow Diagram (DFD)](#7-data-flow-diagram-dfd)
+8. [AI & Adaptive Engine Architecture](#8-ai--adaptive-engine-architecture)
+9. [Authentication & Security](#9-authentication--security)
+10. [Hooks & API Reference](#10-hooks--api-reference)
+11. [Deployment & Environment Setup](#11-deployment--environment-setup)
+
+---
+
+## 1. Executive Summary & System Overview
+
+### 1.1 What is NeuroNest Kids?
+
+**NeuroNest Kids** is an AI-powered, child-centric educational web application built from the ground up for children with **autism spectrum disorder (ASD)**, learning disabilities, and developmental differences. The platform provides a safe, calm, and highly adaptive digital learning environment that adjusts itself in real time to each child's unique cognitive pace, sensory preferences, and emotional state.
+
+The application is designed around the core insight that children with ASD often respond best to structured, predictable interactions with clear visual feedback, consistent routines, and just-right challenges — not too hard (causing frustration) and not too easy (causing boredom). NeuroNest Kids uses an embedded AI engine to continuously monitor performance and automatically calibrate difficulty, pacing, and emotional support.
+
+### 1.2 Mission Statement
+
+> *"Learning should meet every child where they are — not where the curriculum expects them to be."*
+
+NeuroNest Kids ensures that every game session is personalised and encouraging. When a child struggles, the AI detects it within 2–3 answers and immediately simplifies the challenge. When a child excels, the AI progressively introduces complexity — all without the child ever feeling tested.
+
+### 1.3 Who Uses It?
+
+| User Type | Role | Primary Actions |
+|---|---|---|
+| **Parent / Caregiver** | Account owner | Create child profiles, review reports, set limits, configure AI |
+| **Child** | Learner | Play games, earn stars, learn through play |
+| **Educator (future)** | Supervisor | Monitor class-wide progress, assign learning goals |
+
+### 1.4 System Context
+
+NeuroNest Kids is a **Single-Page Application (SPA)** served over the web, backed by a fully managed cloud infrastructure:
+
+- The **frontend** is a React application bundled by Vite, deployed as static files.
+- The **backend** is entirely powered by **Supabase** — a Firebase-alternative built on PostgreSQL — that handles authentication, row-level-security data access, real-time subscriptions, and edge functions.
+- An **AI orchestration layer** runs as a Supabase Edge Function (`adaptive-ai-helper`) that receives gameplay telemetry and returns personalised encouragement, hints, and difficulty recommendations.
+
+### 1.5 Design Philosophy
+
+- **Neurodiversity-first**: Minimal clutter, predictable layouts, calming color palette (pastels + purples), and optional reduced animations.
+- **Emoji-forward**: Every concept is paired with an emoji or cartoon for children who struggle with text.
+- **Voice-paired**: All questions and feedback are simultaneously spoken via the Web Speech API.
+- **Parent visibility**: A full reporting dashboard with PIN-gate gives parents deep insight without interrupting the child's session.
+- **Data sovereignty**: All data stays within the parent's account; no data is shared or sold.
+
+### 1.6 Key Metrics & Scope
+
+| Metric | Value |
+|---|---|
+| Total interactive games | 20 |
+| Questions per game session | 10 |
+| Difficulty levels | 5 (dynamically adjusted by AI) |
+| Database tables | 7 |
+| Custom React hooks | 12 |
+| React components | 32 (+ 49 UI primitives) |
+| Supporting UI pages | 7 |
+| Supabase edge functions | 1 (adaptive-ai-helper) |
+
+---
+
+## 2. Technology Stack & Architecture
+
+### 2.1 Full Technology Stack
+
+| Layer | Technology | Version | Purpose |
+|---|---|---|---|
+| **UI Framework** | React | 18.x | Component-based user interface |
+| **Language** | TypeScript | 5.x | Type safety, developer productivity |
+| **Build Tool** | Vite | 5.x | Fast dev server, optimised bundling |
+| **Styling** | Tailwind CSS | 3.x | Utility-first responsive styling |
+| **Component Library** | Shadcn/UI | Latest | Accessible, unstyled base components |
+| **Routing** | React Router | 6.x | Client-side multi-page navigation |
+| **Data Fetching** | TanStack Query | 5.x | Server state management, caching |
+| **Backend / Database** | Supabase (PostgreSQL) | Latest | Auth, DB, realtime, edge functions |
+| **Authentication** | Supabase Auth | — | JWT-based, email/password |
+| **Audio** | Web Audio API | Native | Programmatic sound synthesis, TTS |
+| **Icons** | Lucide React | Latest | Consistent SVG icon system |
+| **Animations** | CSS animations + Tailwind | — | Bounce, spin, fade, celebrate effects |
+
+### 2.2 Architecture Overview
+
+```
+┌─────────────────────────────────────────────┐
+│               BROWSER (SPA)                  │
+│  React 18  ─  React Router  ─  TanStack Query│
+│                                               │
+│  ┌──────────┐  ┌──────────┐  ┌────────────┐  │
+│  │  Pages   │  │Components│  │   Hooks    │  │
+│  │ (7 main) │  │ (32+49)  │  │   (12)     │  │
+│  └──────────┘  └──────────┘  └────────────┘  │
+└───────────────────┬─────────────────────────┘
+                    │ HTTPS / WebSocket
+┌───────────────────▼─────────────────────────┐
+│               SUPABASE CLOUD                 │
+│                                               │
+│  ┌────────────┐  ┌──────────────────────┐   │
+│  │  Auth      │  │  PostgreSQL DB        │   │
+│  │  (JWT)     │  │  (7 tables, RLS)      │   │
+│  └────────────┘  └──────────────────────┘   │
+│                                               │
+│  ┌────────────────────────────────────────┐  │
+│  │  Edge Function: adaptive-ai-helper     │  │
+│  │  (Deno runtime, processes AI calls)   │  │
+│  └────────────────────────────────────────┘  │
+└─────────────────────────────────────────────┘
+```
+
+### 2.3 Frontend Directory Structure
+
+```
+neuro-frontend/neuronest-kids/
+├── src/
+│   ├── pages/
+│   │   ├── Landing.tsx          # Public landing page
+│   │   ├── Auth.tsx             # Login / sign-up
+│   │   ├── ParentDashboard.tsx  # Parent control centre
+│   │   ├── ChildDashboard.tsx   # Child game hub home
+│   │   ├── GameHub.tsx          # Game selection grid
+│   │   ├── Documentation.tsx    # In-app docs page
+│   │   └── games/              # 20 game pages
+│   │
+│   ├── components/
+│   │   ├── ui/                  # 49 Shadcn UI primitives
+│   │   ├── GameAIIndicator.tsx  # Floating AI difficulty widget
+│   │   ├── AdaptiveAIFeedback.tsx # In-game encouragement overlay
+│   │   ├── GuideMascot.tsx      # Animated in-game mascot
+│   │   ├── FloatingGuide.tsx    # Persistent floating helper guide
+│   │   ├── ParentReportDashboard.tsx # Analytics UI
+│   │   └── ...                  # 25 more components
+│   │
+│   ├── hooks/
+│   │   ├── useAdaptiveAI.ts     # AI session & encouragement logic
+│   │   ├── useAdaptiveDifficulty.ts # Live difficulty engine
+│   │   ├── useAuth.tsx          # Authentication state
+│   │   ├── useSoundEffects.ts   # Web Audio API sounds
+│   │   ├── useTextToSpeech.ts   # Speech synthesis
+│   │   ├── useGameStats.ts      # Stats fetching
+│   │   ├── useParentAlerts.ts   # Alert triggers
+│   │   ├── useRemoteControlSettings.ts # Parent remote config
+│   │   ├── useRewardSystem.ts   # Badges & rewards
+│   │   └── ...                  # 3 more hooks
+│   │
+│   ├── contexts/
+│   │   └── ParentAlertsContext.tsx
+│   │
+│   └── integrations/supabase/
+│       ├── client.ts            # Supabase JS client
+│       └── types.ts             # DB type definitions
+│
+├── supabase/
+│   ├── functions/adaptive-ai-helper/  # Edge AI function
+│   └── migrations/             # 5 SQL migration files
+│
+└── backend/                    # Optional Express.js backend
+    ├── server.js
+    ├── db.js
+    └── routes/
+```
+
+### 2.4 State Management Pattern
+
+NeuroNest Kids uses a **React-native state management** approach with no Redux or Zustand. State is segmented into:
+
+- **Local component state** (`useState`) — UI interactions, form values.
+- **Server state** (TanStack Query) — data fetched from Supabase (child profiles, sessions).
+- **Cross-component context** (`useContext`) — auth state, parent alerts.
+- **Ref-based mutable state** (`useRef`) — AI counters (consecutiveWrong, streaks) that must update without triggering re-renders.
+
+---
+
+## 3. Features — Child & Parent
+
+### 3.1 Child-Facing Features
+
+#### 🎮 Adaptive Game Library
+The platform provides 20 educational mini-games covering five learning domains:
+- **Literacy**: Alphabet, Vowels, Consonants, Letter Tracing
+- **Numeracy**: Numbers, Counting, Comparing, Clock
+- **World Knowledge**: Animals, Body Parts, Kitchen, Home Tools, Fruits, Weather
+- **Cognitive**: Memory, Emotions, Drag-Drop Sorting, Music, Color Recognition, Shape Matching
+
+Each game consists of **10 rounds** with immediate audio-visual feedback. All games share the same scoring system (+10 per correct answer) and star rating (1–3 stars based on accuracy ≥50%, ≥70%, ≥90%).
+
+#### 🤖 Real-Time AI Difficulty Adaptation
+The AI continuously monitors five signals:
+1. **Consecutive wrong answers** — triggers immediate difficulty drop
+2. **Consecutive correct answers (streak)** — triggers difficulty increase
+3. **Overall session accuracy** — influences long-term base level
+4. **Response time** — fast responses suggest confidence
+5. **Session duration** — fatigue detection triggers break suggestions
+
+Based on these signals the AI moves the child through 5 tiers without disrupting gameplay:
+
+| Level | Name | What Changes in AlphabetGame |
+|---|---|---|
+| 1 | Very Easy | Word + Emoji shown; far-apart letter options (A, H, P, Z) |
+| 2 | Easy | Word + Emoji shown; slightly spread options |
+| 3 | Normal | Default behaviour; random options |
+| 4 | Hard | Word shown; similar/confusing letters as options (B, D, P, Q) |
+| 5 | Expert | **Emoji only** — word hidden; confusing letter options |
+
+#### 🔊 Voice & Sound Feedback
+Every game question is spoken aloud using the **Web Speech API**. Sound effects are generated in real-time via the **Web Audio API** — no file downloads needed. Parents can disable sounds in settings.
+
+#### 🌟 Rewards & Star System
+Each game session is rated 1–3 stars based on final accuracy. Stars are displayed on the game-complete screen with a satisfying spin animation. A persistent streak counter rewards consecutive correct answers.
+
+#### 🦮 Animated Guide Mascot
+Every game screen has an animated **GuideMascot** that:
+- Shows contextual encouragement messages in a speech bubble
+- Switches between `happy`, `thinking`, `celebrating`, and `sad` emotions
+- Uses a typewriter effect for text display
+- Is present even when the AI overlay is visible
+
+#### 🎙️ Voice Input
+A `VoiceButton` component integrates with the Web Speech API allowing children to speak their answers (where supported by the browser).
+
+### 3.2 Parent-Facing Features
+
+#### 🔐 PIN-Protected Dashboard
+The parent dashboard is accessible after authentication. Sensitive sections (Reports, Settings) are additionally protected by a **4-digit PIN** stored locally. First-time parents set a PIN; returning parents must enter it to access protected areas.
+
+#### 📊 Progress Analytics & Reports
+The `ParentReportDashboard` provides:
+- **Accuracy trends** across all games and time periods
+- **Game-by-game breakdown** — best game, worst game, average accuracy
+- **Mistake analysis** — which specific questions were most commonly wrong
+- **Session timeline** — visual history of past game sessions
+- **Strength/challenge identification** — categories the child excels in vs. needs practice
+
+#### 📡 Real-Time Remote Control
+Via the `ParentRemoteControl` component, parents can:
+- Set the child's **maximum games per session**
+- Set a **daily time limit** in minutes
+- Toggle **difficulty auto-adjustment** on/off
+- Enable/disable specific **game categories**
+- Set a **manual difficulty level override** (1–5)
+- Enable **focus mode** (hides distracting elements)
+- Configure **break reminders** (interval in minutes)
+- Set **age filter** for content appropriateness
+
+All remote control settings are stored in the `remote_control_settings` table with realtime sync, meaning changes take effect in the child's active session within seconds.
+
+#### 🔔 Automated Parent Alerts
+The `useParentAlerts` hook sends the parent a notification when:
+- A child achieves a **milestone** (e.g., 90%+ accuracy, long streak)
+- A child is **struggling** (3+ consecutive wrong answers, low accuracy)
+
+These alerts appear in the `ParentAlertCenter` component and are logged in the database.
+
+#### 📅 Daily Schedule Builder
+Parents can build a **structured daily schedule** using the `DailyScheduleBuilder` component — specifying which learning categories are played at which times of day, supporting children who thrive on routine.
+
+#### ♿ Accessibility Settings
+The `ParentAccessibilitySettings` and `SensorySettingsPanel` components allow parents to configure:
+- Font size (Standard / Large / Extra Large)
+- Color theme (Default / High Contrast / Soft Pastels)
+- Reduce animations toggle
+- Text-to-speech speed and voice selection
+- Button tap size enlargement
+
+---
+
+## 4. Games Catalogue — All 20 Games
+
+Each game follows the same structural pattern: 10 rounds, immediate feedback, stars on completion, and data saved to `game_sessions`.
+
+### 4.1 Literacy Games
+
+#### 🔤 Alphabet Game (`/games/alphabet/:childId`)
+**Learning Goal**: Identify the starting letter of a word.
+**Mechanic**: An emoji and/or word is shown; the child picks the correct starting letter from a 2×2 grid of options.
+**AI Adaptation**: Options change from far-apart letters (Easy) → similar/confusing letters (Hard); word label hides at Expert level (emoji only).
+**Options**: 4 letter choices | **Alphabet Pool**: All 26 letters (A–Z)
+
+#### 🔵 Vowels Game (`/games/vowels/:childId`)
+**Learning Goal**: Identify vowels (A, E, I, O, U) vs consonants.
+**Mechanic**: A letter is shown; the child chooses "Vowel" or "Consonant".
+**AI Adaptation**: Confusing borderline letters introduced at higher difficulty.
+
+#### 🔴 Consonants Game (`/games/consonants/:childId`)
+**Learning Goal**: Recognize consonants and their sounds.
+**Mechanic**: A word/image is shown; the child identifies the first consonant sound.
+
+#### ✏️ Letter Tracing Game (`/games/letters/:childId`)
+**Learning Goal**: Develop fine motor skills through letter tracing.
+**Mechanic**: An SVG canvas is displayed; the child traces a letter by dragging their finger/mouse along the guide path.
+
+### 4.2 Numeracy Games
+
+#### 🔢 Numbers Game (`/games/numbers/:childId`)
+**Learning Goal**: Recognise single and double-digit numbers.
+**Mechanic**: A numeral is displayed (with optional voice reading); the child picks the matching word ("Seven", "12", etc.) from 4 options.
+
+#### 🧮 Count Along Game (`/games/counting/:childId`)
+**Learning Goal**: Count objects accurately.
+**Mechanic**: A group of emojis is shown (1–10 items); the child selects the correct count from 4 answer buttons.
+
+#### ⚖️ Compare Items Game (`/games/comparing/:childId`)
+**Learning Goal**: Understand "more than", "less than", and "equal".
+**Mechanic**: Two groups of objects are shown; the child selects the comparison operator.
+
+#### 🕐 Clock Game (`/games/clock/:childId`)
+**Learning Goal**: Tell the time from an analogue clock.
+**Mechanic**: An SVG analogue clock face is shown; the child selects the correct time (e.g., "3:30") from 4 options.
+
+### 4.3 World Knowledge Games
+
+#### 🦁 Animals Game (`/games/animals/:childId`)
+**Learning Goal**: Identify animals by name and sound.
+**Mechanic**: An animal emoji is shown; the child selects the correct name. Sound cues play the animal's sound.
+
+#### 🫀 Body Parts Game (`/games/bodyparts/:childId`)
+**Learning Goal**: Learn body part names.
+**Mechanic**: A body part is highlighted on an illustrated body diagram; the child names it.
+
+#### 🍴 Kitchen Game (`/games/kitchen/:childId`)
+**Learning Goal**: Recognise kitchen items and their uses.
+**Mechanic**: An object emoji is shown; the child identifies it by name or use.
+
+#### 🔧 Home Tools Game (`/games/hometools/:childId`)
+**Learning Goal**: Recognise household tools and items.
+**Mechanic**: Similar to Kitchen game — emoji + 4-option multiple choice.
+
+#### 🍎 Fruits Learning Game (`/games/fruits/:childId`)
+**Learning Goal**: Identify fruits and vegetables.
+**Mechanic**: A food emoji is displayed with the category label; the child selects the name.
+**Items**: Apple, Banana, Orange, Strawberry, Grapes, Watermelon, Mango, Pineapple, Cherry, Peach, Carrot, Broccoli, Tomato, Cucumber, Corn, Potato.
+
+#### 🌦️ Weather Game (`/games/weather/:childId`)
+**Learning Goal**: Identify weather conditions.
+**Mechanic**: A weather emoji/animation is shown; the child names the condition (Sunny, Rainy, Cloudy, Snowy, etc.)
+
+### 4.4 Cognitive Games
+
+#### 🧠 Memory Game (`/games/memory/:childId`)
+**Learning Goal**: Develop short-term visual memory.
+**Mechanic**: A grid of face-down cards is shown; the child flips pairs to find matching emojis. Fewer pairs = easier; full 6×6 grid = expert.
+
+#### 😊 Emotions Game (`/games/emotions/:childId`)
+**Learning Goal**: Recognise and name emotions — critical for children with ASD.
+**Mechanic**: A cartoon face/emoji showing an emotion is displayed; the child selects the emotion name ("Happy", "Sad", "Angry", "Surprised", etc.).
+
+#### 📦 Drag & Drop Sorting Game (`/games/sorting/:childId`)
+**Learning Goal**: Categorise items logically.
+**Mechanic**: Items appear on screen and must be dragged into the correct category zone (Fruits / Animals / Vehicles / etc.).
+
+#### 🎵 Music Game (`/games/music/:childId`)
+**Learning Goal**: Recognise musical instruments.
+**Mechanic**: An instrument emoji or image is shown (with optional sound); the child names the instrument.
+
+#### 🎨 Color Recognition Game (`/games/colors/:childId`)
+**Learning Goal**: Name colors.
+**Mechanic**: A colored square/panel is shown; the child selects the correct color name.
+**Colors**: Red, Blue, Yellow, Green, Orange, Purple, Pink, Brown, Black, White, Gray, Cyan.
+
+#### 🔷 Shape Matching Game (`/games/shapes/:childId`)
+**Learning Goal**: Identify 2D geometric shapes.
+**Mechanic**: A shape is shown; the child names it.
+**Shapes**: Circle, Square, Triangle, Rectangle, Star, Heart, Diamond, Oval, Pentagon, Hexagon.
+
+---
+
+## 5. Database Schema
+
+All tables are hosted in a Supabase (PostgreSQL) instance with **Row-Level Security (RLS)** enabled on every table. No table is publicly readable without authentication.
+
+### 5.1 Table: `profiles`
+
+Stores one profile record per authenticated parent user. Created automatically via database trigger on signup.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | UUID | PK, DEFAULT gen_random_uuid() | Unique profile ID |
+| `user_id` | UUID | FK → auth.users, UNIQUE, NOT NULL | Links to Supabase Auth user |
+| `email` | TEXT | — | Parent email address |
+| `display_name` | TEXT | — | Parent display name |
+| `created_at` | TIMESTAMPTZ | NOT NULL, DEFAULT now() | Account creation time |
+| `updated_at` | TIMESTAMPTZ | NOT NULL, DEFAULT now() | Last updated (auto-trigger) |
+
+### 5.2 Table: `user_roles`
+
+Stores role assignments. Currently only the `parent` role is used. Designed to support future educator/admin roles.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | UUID | PK | Unique row ID |
+| `user_id` | UUID | FK → auth.users, NOT NULL | User reference |
+| `role` | ENUM (app_role) | NOT NULL | `'parent'` or `'child'` |
+| — | — | UNIQUE(user_id, role) | One role per user |
+
+### 5.3 Table: `child_profiles`
+
+Core entity representing a child learner under a parent account.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | UUID | PK | Unique child ID |
+| `parent_id` | UUID | FK → auth.users, NOT NULL | Owning parent |
+| `name` | TEXT | NOT NULL | Child's first name |
+| `age` | INTEGER | CHECK (1–25) | Child's age (updated constraint) |
+| `avatar` | TEXT | DEFAULT 'default' | Avatar identifier string |
+| `created_at` | TIMESTAMPTZ | NOT NULL | Profile creation time |
+| `updated_at` | TIMESTAMPTZ | NOT NULL | Last modified |
+
+### 5.4 Table: `parental_settings`
+
+One settings row per parent, created on signup via trigger.
+
+| Column | Type | Default | Description |
+|---|---|---|---|
+| `id` | UUID | gen_random_uuid() | PK |
+| `parent_id` | UUID | — | FK → auth.users (UNIQUE) |
+| `session_duration_minutes` | INTEGER | 30 | Max session length |
+| `sound_enabled` | BOOLEAN | true | Enable game sounds |
+| `animations_enabled` | BOOLEAN | true | Enable animations |
+| `created_at` | TIMESTAMPTZ | now() | Creation time |
+| `updated_at` | TIMESTAMPTZ | now() | Last modified |
+
+### 5.5 Table: `game_sessions`
+
+A record is inserted at the end of every game a child plays.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `id` | UUID | PK | Session ID |
+| `child_id` | UUID | FK → child_profiles, NOT NULL | Playing child |
+| `game_type` | TEXT | NOT NULL | e.g., `'alphabet'`, `'colors'` |
+| `score` | INTEGER | NOT NULL, DEFAULT 0 | Final score |
+| `total_questions` | INTEGER | NOT NULL | Always 10 |
+| `correct_answers` | INTEGER | NOT NULL | Correct count |
+| `wrong_answers` | INTEGER | NOT NULL | Wrong count |
+| `mistakes` | JSONB | DEFAULT '[]' | Array of mistake detail objects |
+| `max_streak` | INTEGER | NOT NULL | Best consecutive streak |
+| `duration_seconds` | INTEGER | DEFAULT 0 | How long the session took |
+| `created_at` | TIMESTAMPTZ | NOT NULL | Session date |
+
+**Indexes**: `child_id`, `game_type`, `created_at DESC`
+
+### 5.6 Table: `child_behavior_profiles`
+
+One row per child, maintained by the Adaptive AI engine. Records long-term learning patterns and preferences.
+
+| Column | Type | Default | Description |
+|---|---|---|---|
+| `id` | UUID | gen_random_uuid() | PK |
+| `child_id` | UUID | — | FK → child_profiles (UNIQUE) |
+| `preferred_pace` | VARCHAR(20) | `'normal'` | `slow`, `normal`, or `fast` |
+| `attention_span_minutes` | INTEGER | 10 | Estimated focus duration |
+| `best_time_of_day` | VARCHAR(20) | `'morning'` | `morning`, `afternoon`, `evening` |
+| `prefers_sounds` | BOOLEAN | true | Audio preference |
+| `prefers_animations` | BOOLEAN | true | Animation preference |
+| `color_sensitivity` | VARCHAR(20) | `'normal'` | Sensory color sensitivity |
+| `average_accuracy` | DECIMAL(5,2) | 0 | Running average across sessions |
+| `average_response_time_seconds` | DECIMAL(8,2) | 0 | Median answer speed |
+| `frustration_threshold` | INTEGER | 3 | Wrong answers before AI intervenes |
+| `strong_categories` | JSONB | `[]` | Games where accuracy ≥ 80% |
+| `challenging_categories` | JSONB | `[]` | Games where accuracy < 50% |
+| `current_difficulty_level` | INTEGER | 1 | AI-managed level (1–5) |
+| `recommended_games` | JSONB | `[]` | AI-suggested games to play next |
+| `last_ai_analysis` | TIMESTAMPTZ | — | When AI last updated this profile |
+| `ai_insights` | JSONB | `{}` | Freeform AI observations |
+| `created_at` | TIMESTAMPTZ | now() | — |
+| `updated_at` | TIMESTAMPTZ | now() | Auto-updated by trigger |
+
+### 5.7 Table: `remote_control_settings`
+
+One row per child. Updated by parents in real-time. Games read this table to apply parent-configured constraints.
+
+| Column | Type | Default | Description |
+|---|---|---|---|
+| `id` | UUID | gen_random_uuid() | PK |
+| `child_id` | UUID | — | FK → child_profiles (UNIQUE) |
+| `parent_id` | UUID | — | FK → auth.users |
+| `difficulty_level` | INTEGER | 3 | Manual override (1–5) |
+| `auto_adjust_difficulty` | BOOLEAN | true | Let AI adjust difficulty |
+| `enabled_categories` | JSONB | All categories | Which game types are allowed |
+| `daily_time_limit` | INTEGER | 30 | Minutes per day |
+| `learning_goals` | JSONB | `[]` | Parent-set learning objectives |
+| `focus_mode` | BOOLEAN | false | Reduces UI distractions |
+| `age_filter` | INTEGER | 5 | Content age appropriateness |
+| `content_filter_level` | TEXT | `'standard'` | `standard`, `strict`, `relaxed` |
+| `schedule` | JSONB | `[]` | Daily schedule entries |
+| `milestone_notifications` | JSONB | `[]` | Alerts for milestones |
+| `break_reminders` | BOOLEAN | true | Enable break alerts |
+| `break_interval_minutes` | INTEGER | 15 | How often to suggest breaks |
+| `max_games_per_session` | INTEGER | 10 | Cap on games per sitting |
+| `created_at` | TIMESTAMPTZ | now() | — |
+| `updated_at` | TIMESTAMPTZ | now() | Auto-updated by trigger |
+
+**Realtime**: This table is published to the Supabase realtime channel so parent changes propagate instantly to the child's active game session.
+
+---
+
+## 6. Entity-Relationship (ER) Diagram
+
+The following Mermaid ERD shows all tables and their relationships.
+
+```mermaid
+erDiagram
+    AUTH_USERS {
+        uuid id PK
+        text email
+        timestamp created_at
+    }
+
+    PROFILES {
+        uuid id PK
+        uuid user_id FK
+        text email
+        text display_name
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_ROLES {
+        uuid id PK
+        uuid user_id FK
+        enum role
+    }
+
+    PARENTAL_SETTINGS {
+        uuid id PK
+        uuid parent_id FK
+        int session_duration_minutes
+        bool sound_enabled
+        bool animations_enabled
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    CHILD_PROFILES {
+        uuid id PK
+        uuid parent_id FK
+        text name
+        int age
+        text avatar
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    GAME_SESSIONS {
+        uuid id PK
+        uuid child_id FK
+        text game_type
+        int score
+        int total_questions
+        int correct_answers
+        int wrong_answers
+        jsonb mistakes
+        int max_streak
+        int duration_seconds
+        timestamp created_at
+    }
+
+    CHILD_BEHAVIOR_PROFILES {
+        uuid id PK
+        uuid child_id FK
+        varchar preferred_pace
+        int attention_span_minutes
+        varchar best_time_of_day
+        bool prefers_sounds
+        bool prefers_animations
+        decimal average_accuracy
+        int frustration_threshold
+        jsonb strong_categories
+        jsonb challenging_categories
+        int current_difficulty_level
+        jsonb recommended_games
+        jsonb ai_insights
+        timestamp last_ai_analysis
+    }
+
+    REMOTE_CONTROL_SETTINGS {
+        uuid id PK
+        uuid child_id FK
+        uuid parent_id FK
+        int difficulty_level
+        bool auto_adjust_difficulty
+        jsonb enabled_categories
+        int daily_time_limit
+        bool focus_mode
+        bool break_reminders
+        int break_interval_minutes
+        int max_games_per_session
+        jsonb schedule
+        timestamp updated_at
+    }
+
+    AUTH_USERS ||--o| PROFILES : "has"
+    AUTH_USERS ||--o{ USER_ROLES : "assigned"
+    AUTH_USERS ||--o| PARENTAL_SETTINGS : "configures"
+    AUTH_USERS ||--o{ CHILD_PROFILES : "manages"
+    CHILD_PROFILES ||--o{ GAME_SESSIONS : "plays"
+    CHILD_PROFILES ||--o| CHILD_BEHAVIOR_PROFILES : "has AI profile"
+    CHILD_PROFILES ||--o| REMOTE_CONTROL_SETTINGS : "controlled by"
+    AUTH_USERS ||--o{ REMOTE_CONTROL_SETTINGS : "parent controls"
+```
+
+### 6.1 ER Relationship Descriptions
+
+| Relationship | Type | Notes |
+|---|---|---|
+| `AUTH_USERS` → `PROFILES` | 1-to-1 | Created by trigger on signup |
+| `AUTH_USERS` → `USER_ROLES` | 1-to-many | Currently only 'parent' role used |
+| `AUTH_USERS` → `PARENTAL_SETTINGS` | 1-to-1 | Created by trigger on signup |
+| `AUTH_USERS` → `CHILD_PROFILES` | 1-to-many | A parent can have multiple children |
+| `CHILD_PROFILES` → `GAME_SESSIONS` | 1-to-many | Each game play = one session record |
+| `CHILD_PROFILES` → `CHILD_BEHAVIOR_PROFILES` | 1-to-1 | One AI profile per child |
+| `CHILD_PROFILES` → `REMOTE_CONTROL_SETTINGS` | 1-to-1 | One remote config per child |
+
+---
+
+## 7. Data Flow Diagram (DFD)
+
+### 7.1 Level 0 — Context DFD
+
+The Level 0 Context DFD shows the system as a single process block with external entities and major data flows.
+
+```mermaid
+flowchart LR
+    PARENT(["👨‍👩‍👧 Parent\nCaregiver"])
+    CHILD(["👧 Child\nLearner"])
+    SUPABASE_AUTH(["🔐 Supabase\nAuth"])
+    AI_ENGINE(["🤖 AI Engine\nEdge Function"])
+
+    NEURONEST["⬡ NeuroNest Kids\nSystem"]
+
+    PARENT -- "Sign up / Login\nCreate child profiles\nConfigure settings\nView reports" --> NEURONEST
+    CHILD -- "Select games\nAnswer questions\nInteract with mascot" --> NEURONEST
+
+    NEURONEST -- "Auth tokens\nUser session" --> SUPABASE_AUTH
+    SUPABASE_AUTH -- "JWT / session data" --> NEURONEST
+
+    NEURONEST -- "Gameplay telemetry\nBehavior profile" --> AI_ENGINE
+    AI_ENGINE -- "Encouragement messages\nHints\nDifficulty adjustment" --> NEURONEST
+
+    NEURONEST -- "Progress reports\nAlerts\nAnalytics" --> PARENT
+    NEURONEST -- "Adapted questions\nFeedback\nSounds" --> CHILD
+```
+
+### 7.2 Level 1 — Expanded DFD
+
+The Level 1 DFD decomposes the system into its major sub-processes and shows how data flows between them and the data stores.
+
+```mermaid
+flowchart TD
+    PARENT(["👨‍👩‍👧 Parent"])
+    CHILD(["👧 Child"])
+
+    P1["1.0\nAuthentication\n& Profile Setup"]
+    P2["2.0\nGame Session\nEngine"]
+    P3["3.0\nAdaptive AI\nEngine"]
+    P4["4.0\nParent Dashboard\n& Reports"]
+    P5["5.0\nRemote Control\nSettings"]
+
+    DS1[("DB: profiles\nparental_settings\nuser_roles")]
+    DS2[("DB: child_profiles")]
+    DS3[("DB: game_sessions")]
+    DS4[("DB: child_behavior_profiles")]
+    DS5[("DB: remote_control_settings")]
+
+    PARENT -- "Email, Password, Child details" --> P1
+    P1 -- "JWT Token" --> PARENT
+    P1 -- "Write profile & settings" --> DS1
+    P1 -- "Write child profile" --> DS2
+
+    CHILD -- "Game selection, Answers" --> P2
+    P2 -- "Questions, Feedback, Sounds" --> CHILD
+    P2 -- "Read child config" --> DS2
+    P2 -- "Write session result" --> DS3
+    P2 -- "Gameplay telemetry" --> P3
+    P2 -- "Read constraints" --> DS5
+
+    P3 -- "Read behavior profile" --> DS4
+    P3 -- "Difficulty level, Encouragement" --> P2
+    P3 -- "Update behavior profile" --> DS4
+
+    PARENT -- "View reports request" --> P4
+    P4 -- "Read sessions" --> DS3
+    P4 -- "Read behavior profile" --> DS4
+    P4 -- "Analytics & reports" --> PARENT
+
+    PARENT -- "Configure settings" --> P5
+    P5 -- "Write remote settings" --> DS5
+    P5 -- "Realtime push to game session" --> P2
+```
+
+### 7.3 Data Store Descriptions
+
+| Data Store | Tables Used | Written By | Read By |
+|---|---|---|---|
+| DS1 — User Accounts | profiles, user_roles, parental_settings | Process 1 (signup trigger) | Process 1, 4 |
+| DS2 — Child Registry | child_profiles | Process 1 (parent creates) | Process 2, 3, 4 |
+| DS3 — Game History | game_sessions | Process 2 (end of game) | Process 4 |
+| DS4 — AI Profile | child_behavior_profiles | Process 3 (AI updates) | Process 2, 3, 4 |
+| DS5 — Remote Config | remote_control_settings | Process 5 (parent) | Process 2 (realtime) |
+
+---
+
+## 8. AI & Adaptive Engine Architecture
+
+### 8.1 Overview
+
+NeuroNest Kids features a two-layer AI architecture:
+
+**Layer 1 — Client-Side Reactive Difficulty** ([useAdaptiveDifficulty.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAdaptiveDifficulty.ts))
+This hook runs entirely in the browser, updating the difficulty level after every single answer. It requires no network call — just pure local state logic — making it instant and robust to connectivity issues.
+
+**Layer 2 — Cloud-Based Cognitive AI** ([useAdaptiveAI.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAdaptiveAI.ts) + `adaptive-ai-helper` edge function)
+This system handles deeper intelligence: generating personalized encouragement messages, creating hints specific to the current question, maintaining the long-term behavior profile, and making cross-session difficulty recommendations.
+
+### 8.2 Client-Side Reactive Difficulty Engine
+
+```
+Answer Given
+    │
+    ▼
+recordCorrect() / recordWrong()
+    │
+    ├── Update: consecutiveWrong, consecutiveCorrect, currentAccuracy
+    │
+    ▼
+calculateShouldShowHard(newState)
+    │
+    ├── questionsAnswered < 5?  → False (always start easy)
+    ├── accuracy ≥ 80%?         → Show hard every 2nd question
+    ├── accuracy < 50%?         → Stay easy
+    └── accuracy 50-80%?        → Show hard every 3rd question after Q7
+    │
+    ▼
+getDifficultyLevel(consecutiveWrong, consecutiveCorrect, currentDifficulty, baseLevel)
+    │
+    ├── consecutiveWrong ≥ 3  → Level 1 (Very Easy)
+    ├── consecutiveWrong ≥ 2  → Level 2 (Easy)
+    ├── currentDifficulty='hard' AND streak ≥ 5 → Level 5 (Expert)
+    ├── currentDifficulty='hard'                 → Level 4 (Hard)
+    └── else → Level 3 (Normal, using base profile level)
+    │
+    ▼
+generateQuestion(usedLetters, level)
+    │
+    └── buildOptions(targetLetter, level)
+            ├── level ≤ 2: FAR_APART_CLUSTERS (A, G, M, S, Z…)
+            ├── level 3:   Random from all 26 letters
+            └── level ≥ 4: CONFUSING_GROUPS matching the target
+                            e.g., target=B → [B, D, P, Q]
+```
+
+### 8.3 Confusing Letter Groups (Hard/Expert Mode)
+
+The AI specifically uses letter groups that children with ASD or dyslexia are known to confuse:
+
+| Group | Letters | Why Confusing |
+|---|---|---|
+| Mirror/Shape similar | B, D, P, Q | Vertical and horizontal reflections |
+| Zig-zag strokes | M, N, W | Similar angular patterns |
+| Open curves | U, V, W | Rounded or spiked opening |
+| Round open letters | C, G, O | Circular with varying gaps |
+| Vertical strokes | I, J, L | Simple vertical lines |
+| Squiggles | S, Z | Diagonal mirror images |
+| Line families | A, E, F, H | Horizontal and vertical bars |
+| Diagonal strokes | K, R, X, Y | Diagonal elements |
+
+### 8.4 Cloud AI Functions (adaptive-ai-helper)
+
+The Supabase Edge Function supports the following action types:
+
+| Action | Trigger | Response |
+|---|---|---|
+| `get_encouragement` | consecutiveWrong ≥ frustration_threshold | Personalised motivational message |
+| `generate_hint` | Player requests help | Question-specific hint string |
+| `real_time_support` | Background check every N answers | `{shouldShowHint, shouldSlowPace, shouldTakeBreak, uiAdjustments}` |
+| `session_summary` | End of game | Summary of performance with encouragement |
+| `adjust_difficulty` | End of session | `{newDifficulty, recommendedPace}` |
+
+### 8.5 Behavior Profile Update Lifecycle
+
+```
+Game Session Ends
+      │
+      ▼
+updateStats(correctAnswers, totalQuestions, gameType)
+      │
+      ├── Compute new running average accuracy
+      ├── If accuracy ≥ 80%: add gameType to strong_categories
+      ├── If accuracy < 50%: add gameType to challenging_categories
+      └── Write updated averages + categories to child_behavior_profiles
+      │
+      ▼
+adjustDifficulty(gameData) [async, calls edge function]
+      │
+      └── Write new current_difficulty_level to child_behavior_profiles
+```
+
+### 8.6 AI Indicator UI Component
+
+The [GameAIIndicator](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/components/GameAIIndicator.tsx#40-239) component floats in the bottom-right corner of every game. It shows:
+- A 5-bar difficulty meter (colored: green→teal→blue→orange→red)
+- Current status: Struggling / Focused / Excelling
+- Streak count
+- Preferred pace from behavior profile
+- AI recommendation message (from `useAdaptiveDifficulty.aiRecommendation`)
+- Recent AI call history (debugging trace)
+
+---
+
+## 9. Authentication & Security
+
+### 9.1 Authentication Flow
+
+```
+User visits NeuroNest Kids
+         │
+         ▼
+    Landing Page
+         │
+    "Get Started"
+         │
+         ▼
+    Auth.tsx (Login or Sign Up)
+         │
+    ┌────┴────┐
+    │         │
+  Sign Up   Sign In
+    │         │
+    ▼         ▼
+  Supabase Auth (email + password)
+    │
+    ├── On sign up: trigger fires automatically
+    │   ├── Creates record in profiles
+    │   ├── Creates record in user_roles (role='parent')
+    │   └── Creates record in parental_settings
+    │
+    ▼
+  JWT issued → stored in browser (Supabase SDK handles refresh)
+    │
+    ▼
+  Redirect to ParentDashboard
+```
+
+### 9.2 Row-Level Security (RLS)
+
+Every database table has RLS enabled. Even if a user obtains a valid JWT, they can only access rows that belong to them:
+
+| Table | Policy Rule |
+|---|---|
+| `profiles` | `auth.uid() = user_id` |
+| `user_roles` | `auth.uid() = user_id` |
+| `child_profiles` | `auth.uid() = parent_id` |
+| `parental_settings` | `auth.uid() = parent_id` |
+| `game_sessions` | Parent owns the child via `child_profiles` |
+| `child_behavior_profiles` | Parent owns the child via `child_profiles` |
+| `remote_control_settings` | Parent owns the child via `child_profiles` |
+
+This means: **a parent can never see another parent's children's data, even if they have an authenticated session.**
+
+### 9.3 Parent PIN System
+
+The parent dashboard provides an additional local security layer:
+
+```
+Parent tries to access: View Reports OR Settings
+              │
+              ▼
+    ParentPinGate.tsx
+              │
+    ┌─────────┴──────────┐
+    │                    │
+  PIN set?           PIN not set?
+    │                    │
+    ▼                    ▼
+  Enter PIN          Create new 4-digit PIN
+    │                    │
+    ▼                    ▼
+  Verify against      Store in localStorage
+  localStorage
+    │
+    ▼
+  Access granted (session-valid, no timer)
+```
+
+> **Note**: The PIN lives in `localStorage`. For production deployment, consider encrypting it or using `sessionStorage` for automatic expiry on tab close.
+
+### 9.4 Data Privacy
+
+- All data is stored in the Supabase project's PostgreSQL instance.
+- No analytics, advertising, or third-party tracking is implemented.
+- Game session data is structured (never includes biometric data).
+- Parents can delete child profiles, which cascades to delete all associated sessions and behavioral profiles.
+
+### 9.5 Edge Function Security
+
+The `adaptive-ai-helper` edge function is invoked via `supabase.functions.invoke()`, which automatically attaches the user's JWT. The function verifies the JWT before processing any request. No unauthenticated calls can reach the AI layer.
+
+---
+
+## 10. Hooks & API Reference
+
+### 10.1 [useAdaptiveAI(childId)](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAdaptiveAI.ts#61-388)
+
+**Location**: [src/hooks/useAdaptiveAI.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAdaptiveAI.ts)
+**Purpose**: Manages the cloud-based AI session — fetches/creates the behavior profile, tracks consecutive correct/wrong answers, and calls the edge function for encouragement and hints.
+
+```typescript
+const {
+  behaviorProfile,       // BehaviorProfile | null — loaded from DB
+  isLoading,             // boolean — true while AI call in-flight
+  encouragement,         // string | null — message shown when struggling
+  hint,                  // string | null — hint for current question
+  realTimeSupport,       // RealTimeSupport | null — UI adjustment flags
+  trackCorrect,          // () => void — call on correct answer
+  trackWrong,            // (gameData) => Promise — call on wrong answer
+  requestHint,           // (gameData, question) => Promise
+  checkRealTimeSupport,  // (gameData) => Promise
+  getSessionSummary,     // (gameData) => Promise<string>
+  adjustDifficulty,      // (gameData) => Promise
+  updateStats,           // (correct, total, gameType) => Promise
+  resetSession,          // () => void — resets all counters
+  clearMessages,         // () => void — dismisses encouragement/hint
+  consecutiveWrong,      // number — current wrong streak
+  currentStreak,         // number — current correct streak
+  aiTrace,               // AdaptiveAIEvent[] — last 20 AI calls (debug)
+} = useAdaptiveAI(childId);
+```
+
+### 10.2 [useAdaptiveDifficulty(config?)](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAdaptiveDifficulty.ts#45-204)
+
+**Location**: [src/hooks/useAdaptiveDifficulty.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAdaptiveDifficulty.ts)
+**Purpose**: Client-side reactive difficulty engine. No network calls. Updates after every answer.
+
+```typescript
+const {
+  state,               // DifficultyState — full state object
+  getQuestionDifficulty, // () => 'easy' | 'hard'
+  recordCorrect,       // () => void
+  recordWrong,         // () => void
+  reset,               // () => void
+  aiRecommendation,    // { level: string, message: string }
+  currentDifficulty,   // 'easy' | 'hard'
+  currentAccuracy,     // number (0–100)
+  questionsAnswered,   // number
+} = useAdaptiveDifficulty(config?);
+```
+
+### 10.3 `useAuth()`
+
+**Location**: [src/hooks/useAuth.tsx](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useAuth.tsx)
+**Purpose**: Provides the authenticated user and session.
+
+```typescript
+const { user, session, loading, signIn, signUp, signOut } = useAuth();
+```
+
+### 10.4 `useSoundEffects()`
+
+**Location**: [src/hooks/useSoundEffects.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useSoundEffects.ts)
+**Purpose**: Web Audio API sound generation. All sounds are synthesised — no audio files needed.
+
+```typescript
+const { playCorrect, playWrong, playComplete, playClick } = useSoundEffects();
+```
+
+### 10.5 `useTextToSpeech()`
+
+**Location**: [src/hooks/useTextToSpeech.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useTextToSpeech.ts)
+**Purpose**: Wraps the Web Speech API's `SpeechSynthesisUtterance` for kid-friendly voice output.
+
+```typescript
+const { speak, stop, isSpeaking } = useTextToSpeech();
+speak("Apple starts with which letter?"); // reads aloud immediately
+```
+
+### 10.6 `useGameStats(childId)`
+
+**Location**: [src/hooks/useGameStats.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useGameStats.ts)
+**Purpose**: Fetches and computes aggregated game statistics for the reports dashboard.
+
+```typescript
+const { stats, loading, getChildStats } = useGameStats(childId);
+// stats includes: totalGames, averageAccuracy, bestGame, worstGame, recentSessions[]
+```
+
+### 10.7 `useParentAlerts()`
+
+**Location**: [src/hooks/useParentAlerts.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useParentAlerts.ts)
+**Purpose**: Manages the alert queue and triggers milestone/struggle notifications.
+
+```typescript
+const { alerts, checkForMilestones, checkForStruggles, clearAlert } = useParentAlerts();
+```
+
+### 10.8 `useRemoteControlSettings(childId)`
+
+**Location**: [src/hooks/useRemoteControlSettings.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useRemoteControlSettings.ts)
+**Purpose**: Fetches and subscribes to real-time updates on a child's remote settings.
+
+```typescript
+const { settings, updateSettings, isLoading } = useRemoteControlSettings(childId);
+```
+
+### 10.9 `useRewardSystem(childId)`
+
+**Location**: [src/hooks/useRewardSystem.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/src/hooks/useRewardSystem.ts)
+**Purpose**: Tracks badges, milestones, and reward state across sessions.
+
+```typescript
+const { rewards, badges, checkForNewBadge, totalPoints } = useRewardSystem(childId);
+```
+
+---
+
+## 11. Deployment & Environment Setup
+
+### 11.1 Prerequisites
+
+| Requirement | Version | Notes |
+|---|---|---|
+| Node.js | ≥ 18.x | LTS recommended |
+| Bun | ≥ 1.x | Used as the package manager |
+| Git | ≥ 2.x | Version control |
+| Supabase CLI | Latest | For local dev and migrations |
+| Supabase Account | — | Free tier works for development |
+
+### 11.2 Environment Variables
+
+**Frontend** ([neuro-frontend/neuronest-kids/.env](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/.env)):
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
+```
+
+**Backend Express** ([neuro-frontend/neuronest-kids/backend/.env](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/backend/.env)):
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+### 11.3 Local Development Setup
+
+```bash
+# 1. Clone the repository
+git clone <repo-url>
+cd neuro-frontend/neuronest-kids
+
+# 2. Install dependencies
+bun install
+
+# 3. Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your Supabase credentials
+
+# 4. Apply database migrations
+supabase db push
+
+# 5. Deploy the edge function (adaptive AI)
+supabase functions deploy adaptive-ai-helper
+
+# 6. Start the development server
+npm run dev
+# App runs at: http://localhost:5173
+```
+
+### 11.4 Building for Production
+
+```bash
+# Build optimised bundle
+npm run build
+
+# Preview the production bundle locally
+npm run preview
+
+# Deploy to Vercel (recommended)
+vercel deploy --prod
+
+# OR deploy to Netlify
+netlify deploy --prod --dir=dist
+```
+
+### 11.5 Supabase Database Migrations
+
+Migrations are stored in `supabase/migrations/` and applied in timestamp order:
+
+| Migration | Date | Purpose |
+|---|---|---|
+| `20251211...` | Dec 2025 | Initial schema: profiles, user_roles, child_profiles, parental_settings |
+| `20251222...` | Dec 2025 | Add game_sessions table |
+| `20260122...` | Jan 2026 | Add child_behavior_profiles (AI engine) |
+| `20260211...` | Feb 2026 | Fix age constraint (1–25) |
+| `20260214...` | Feb 2026 | Add remote_control_settings + realtime |
+
+To apply all migrations to a new Supabase project:
+
+```bash
+supabase db push
+```
+
+### 11.6 Supabase Edge Function Deployment
+
+The `adaptive-ai-helper` function lives in `supabase/functions/adaptive-ai-helper/`. It runs on Deno and receives POST requests with a JSON body containing `{action, childId, gameData, behaviorProfile, currentQuestion}`.
+
+```bash
+# Deploy function
+supabase functions deploy adaptive-ai-helper
+
+# Test locally
+supabase functions serve adaptive-ai-helper
+```
+
+### 11.7 Key Configuration Files
+
+| File | Purpose |
+|---|---|
+| [vite.config.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/vite.config.ts) | Vite build config, path aliases (`@/`) |
+| [tailwind.config.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/tailwind.config.ts) | Custom color tokens (duo-green, duo-purple, pastel-lavender…) |
+| [tsconfig.app.json](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/tsconfig.app.json) | TypeScript compiler options for the app |
+| [components.json](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/components.json) | Shadcn/UI configuration |
+| [supabase/config.toml](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/supabase/config.toml) | Supabase project local config |
+| [.env](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/.env) | Environment secrets (never commit this file) |
+
+### 11.8 Custom Design Tokens
+
+All brand colors are defined in [tailwind.config.ts](file:///p:/Project%20nuero/nk5/neuro-frontend/neuronest-kids/tailwind.config.ts):
+
+| Token | Hex | Use |
+|---|---|---|
+| `duo-green` | #58CC02 | Correct answer, success |
+| `duo-red` | #FF4B4B | Wrong answer, error |
+| `duo-blue` | #1CB0F6 | Interactive elements |
+| `duo-purple` | #8549BA | Primary brand, AI indicator |
+| `duo-yellow` | #FFD900 | Stars, score |
+| `duo-orange` | #FF9600 | Warnings, struggling state |
+| `duo-teal` | #00CD9C | Secondary accents |
+| `pastel-lavender` | — | Game background gradient top |
+| `pastel-mint` | — | Game background gradient bottom |
+
+---
+
+*Documentation generated: February 2026 — NeuroNest Kids v2.0.0*
+*This document covers the complete system as of the latest codebase revision including the working AI difficulty adaptation system in AlphabetGame.*
