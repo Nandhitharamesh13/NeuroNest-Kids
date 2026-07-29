@@ -2,9 +2,6 @@
 
 **A full-stack educational app designed for neurodiverse children with AI-powered adaptive difficulty, reward systems, and parent controls.**
 
-![GitHub](https://img.shields.io/badge/GitHub-Pravinkumar--04-blue?logo=github)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
 
 ---
 
@@ -43,7 +40,7 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Pravinkumar-04/NeuroNest-Kids.git
+git clone https://github.com/Nandhitharamesh13/NeuroNest-Kids.git
 cd NeuroNest-Kids/neuro-frontend/neuronest-kids
 
 # 2. Install dependencies
@@ -277,17 +274,11 @@ Contributions welcome! Please:
 
 ---
 
-## 📄 License
-
-MIT License - See LICENSE file for details
-
----
-
 ## 👨‍💻 Author
 
-**Pravin Kumar**
-- GitHub: [@Pravinkumar-04](https://github.com/Pravinkumar-04)
-- Project: [NeuroNest-Kids](https://github.com/Pravinkumar-04/NeuroNest-Kids)
+**Nandhitha R**
+- GitHub: [@Nandhitharamesh13](https://github.com/Nandhitharamesh13)
+- Project: [NeuroNest-Kids](https://github.com/Nandhitharamesh13/NeuroNest-Kids)
 
 ---
 
@@ -303,13 +294,5 @@ MIT License - See LICENSE file for details
 
 ---
 
-## 📞 Support
-
-For issues or questions:
-1. Check [DEPLOYMENT.md](DEPLOYMENT.md)
-2. Open GitHub Issue
-3. Contact: pravinkumar@neuronest.dev
-
----
 
 **Made with ❤️ for neurodiverse learners**
