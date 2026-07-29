@@ -2,7 +2,7 @@
 
 ## 1. Clone the Repository
 ```bash
-git clone https://github.com/Pravinkumar-04/NeuroNest-Kids.git
+git clone https://github.com/Nandhitharamesh13/NeuroNest-Kids.git
 cd NeuroNest-Kids
 ```
 
@@ -60,7 +60,7 @@ ssh -i key.pem ec2-user@your-instance
 sudo yum install docker docker-compose
 
 # Clone and deploy
-git clone https://github.com/Pravinkumar-04/NeuroNest-Kids.git
+git clone https://github.com/Nandhitharamesh13/NeuroNest-Kids.git
 cd NeuroNest-Kids
 docker-compose up -d
 ```
