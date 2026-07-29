@@ -131,6 +131,6 @@ See `AI_SYSTEM_README.md` for complete AI documentation including:
 
 ## Tech Stack
 - **Frontend**: React 18, TypeScript, Tailwind CSS, GSAP
-- **Backend**: Supabase (PostgreSQL, Auth, Edge Functions)
-- **AI**: Google Gemini 2.5-flash via Lovable AI Gateway
+- **Backend**: Node.js Express, PostgreSQL
+- **AI**: Custom adaptive difficulty algorithm
 - **State**: React Query, localStorage for rewards/alerts
