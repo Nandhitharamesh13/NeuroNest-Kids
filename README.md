@@ -40,7 +40,7 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Pravinkumar-04/NeuroNest-Kids.git
+git clone https://github.com/Nandhitharamesh13/NeuroNest-Kids.git
 cd NeuroNest-Kids/neuro-frontend/neuronest-kids
 
 # 2. Install dependencies
